@@ -1,0 +1,37 @@
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+<body>
+  <%- include("../partials/nav.ejs") %>
+
+  <div class="create-item content">
+    <form id ="create-form" action="/item/create" method="POST">
+      <label for="name">Item name:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="description">Item description:</label>
+      <textarea type="text" id="description" name="description" required></textarea>
+
+      <label for="category">Item category:</label>
+      <select id="category" name="category">
+        <% if (categories && categories.length > 0) { %>
+          <% categories.forEach(category => { %>
+            <option value="<%= category.name %>"><%= category.name %></option>
+          <% }) %>
+        <% } else { %>
+          <option value="" disabled selected>No categories available</option>
+        <% } %>
+      </select>
+
+      <label for="price">Item price:</label>
+      <input type="text" id="price" name="price" required>
+      <label for="numberInStock">Number in stock:</label>
+      <input type="text" id="numberInStock" name="numberInStock" required>
+      <button>Submit</button>
+    </form>
+    
+  </div>
+
+</body>
+</html>

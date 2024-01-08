@@ -1,0 +1,106 @@
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+<body>
+  <%- include("../partials/nav.ejs") %>
+  <div class="details content">
+      <h3> <%= category.name %> </h3>
+      <div class="content">
+          <p> Description: <%= category.description %></p>
+      </div>
+      <!-- <a class="delete" data-doc="<%= category._id %>">delete</a> -->
+      <div class="icon-container">
+        <a class="edit" data-id="<%= category._id %>" data-name="<%= category.name %>" data-description="<%= category.description %>">
+          <img src="/images/edit.svg" alt="edit icon">
+        </a>
+        <a class="delete" data-id="<%= category._id %>" data-name="<%= category.name %>">
+          <img src="/images/trashcan.svg" alt="trash icon">
+        </a>
+      </div>
+  </div>
+
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditModal()">&times;</span>
+      <form id="editForm">
+        <label for="editName">Name:</label>
+        <input type="text" id="editName" name="editName" required>
+
+        <label for="editDescription">Description:</label>
+        <textarea id="editDescription" name="editDescription" required></textarea>
+
+        <button type="button" onclick="submitEditForm()">Save Changes</button>
+      </form>
+    </div>
+  </div>
+    
+  <script>
+    // edit
+    const editButton = document.querySelector('.edit');
+    const editModal = document.getElementById('editModal');
+    const editNameInput = document.getElementById('editName');
+    const editDescriptionInput = document.getElementById('editDescription');
+    const prevName = editButton.dataset.name
+
+    editButton.addEventListener('click', () => {
+      // populate values from data 
+      editNameInput.value = editButton.dataset.name;
+      editDescriptionInput.value = editButton.dataset.description;
+
+      editModal.style.display = 'block';
+    });
+
+    function closeEditModal() {
+      editModal.style.display = 'none';
+    }
+
+    function submitEditForm() {
+      const id = editButton.dataset.id;
+      const newName = editNameInput.value;
+      const newDescription = editDescriptionInput.value;
+
+      // Make a request to update the data on the server
+      fetch(`/category/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          newName: newName,
+          description: newDescription,
+          prevName: prevName,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Redirect to the updated category details page
+          window.location.href = data.redirect;
+        })
+        .catch(err => console.error(err));
+      
+      // Close the modal
+      closeEditModal();
+    }
+
+    // delete
+    const trashcan = document.querySelector('a.delete')
+    trashcan.addEventListener('click', (e) => {
+      const endpoint = `/category/${trashcan.dataset.id}/${trashcan.dataset.name}`
+
+      fetch(endpoint, {
+        method: 'DELETE'
+      })
+      .then((response) => response.json())
+      .then((data) => window.location.href = data.redirect)
+      .catch(err => console.log(err))
+    })
+
+
+  </script>
+
+  </body>
+</html>
+
+    

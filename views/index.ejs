@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <%- include("./partials/nav.ejs") %>
+    <% if (categories && categories.length > 0) { %>
+      <% categories.forEach(category => { %>
+        <a class="single" href="/category/<%= category._id %>">
+        <h3 class="name"><%= category.name %></h3>
+        </a>
+        <% if (items && items.length > 0) { %>
+          <% items.forEach(item => { %>
+            <% if (item.category == category.name) { %>
+              <a class="single" href="/item/<%= item._id %>">
+              <p class="name">&nbsp;&nbsp;&nbsp;&nbsp;• <%= item.name %></p>
+              </a>
+            <% } %>
+          <% }) %>
+        <% } %> 
+
+      <% }) %>
+    <% } else { %>
+      <p>There are no categories to display...</p>
+    <% } %>
+  </body>
+</html>
